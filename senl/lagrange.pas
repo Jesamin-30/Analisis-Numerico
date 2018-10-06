@@ -1,0 +1,57 @@
+unit Lagrange;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils,Func;
+
+type
+  TLagrange=class
+    public
+      function funcLagrange(B: TList): string;
+  end;
+
+implementation
+
+function TLagrange.funcLagrange(B: TList): string;
+var
+  n,i,j: integer;
+  rs: real;
+  plg, lg: string;
+begin
+  n:= B.Count;
+
+  for i:=0 to n-1 do begin
+    if(TMPoint(B.Items[i]).y <> 0) then begin
+      lg := '('+FloatToStr(TMPoint(B.Items[i]).y)+'*';
+      rs:=1.0;
+      for j:=0 to n-1 do begin
+        if(i<>j) then begin
+          if(TMPoint(B.Items[j]).x = 0) then begin
+            lg:= lg+'x*';
+          end
+          else begin
+            lg := lg+'(x';
+            if(TMPoint(B.Items[j]).x <0) then
+              lg:= lg +'+'
+            else
+              lg:= lg +'-';
+
+            lg:= lg + FloatToStr(Abs(TMPoint(B.Items[j]).x))+')*';
+          end;
+          rs:= rs*(TMPoint(B.Items[i]).x-TMPoint(B.Items[j]).x);
+        end;
+      end;
+      SetLength(lg,Length(lg)-1);
+      lg := lg + '/'+FloatToStr(rs)+')+';
+      plg := plg + lg;
+    end;
+  end;
+  SetLength(plg,Length(plg)-1);
+  Result:= plg;
+end;
+
+end.
+
